@@ -1,0 +1,76 @@
+Developing Data Products Week 4 Course Project
+========================================================
+title: Developing Data Products Week 4 Course Project
+author: Ashley Thompson
+date: 25/11/2021
+autosize: true
+
+Introduction
+========================================================
+
+The application, created with Shiny, can be used to predict a value for fertility 
+in Switzerland 1888 (‘common standardized fertility measure’), 
+using a slider that represents the percentage of males involved
+in agriculture as occupation
+
+Application link
+- https://ashdt.shinyapps.io/DDP_Course_Project/
+
+Source code link
+- https://github.com/ashdtgit/DDP_Course_Project
+
+
+Data information
+========================================================
+
+The data is from the swiss dataset. For this application we are only using the 
+Fertility and Agriculture variables.
+
+```{r}
+library(datasets)
+library(dplyr)
+sws <- select(swiss, 1:2)
+head(sws)
+```
+
+Calculations
+========================================================
+
+A prediction model is made from the swiss data, and then the user selects an 
+Agricultural percentage with a slider, and the resulting predicted Fertility
+is displayed.
+
+```{r}
+##example using 85 as the input
+AgInput <- 85
+modelAg <- lm(Fertility ~ Agriculture, data = sws)
+modelAgPred <- predict(modelAg, newdata = data.frame(Agriculture = AgInput))
+
+modelAgPred
+
+```
+
+Example of the plot output
+========================================================
+
+A plot is created showing:
+
+- The actual data as black points
+- The linear model line as a red line
+- The predicted value as a red dot
+
+```{r, echo=FALSE}
+plot(sws$Agriculture, sws$Fertility, 
+     xlab = "Agriculture %", 
+     ylab = "Fertility",
+     bty = "n", 
+     pch = 16,
+     xlim = c(0,100), 
+     ylim = c(0,100)
+)
+abline(modelAg, col = "red", lwd = 1)
+legend(25, 250, "Prediction using Agri %", pch = 16, 
+       col = "red", bty = "n", cex = 1.2)
+points(AgInput, modelAgPred, col = "red", pch = 16, cex = 2)
+```
+
